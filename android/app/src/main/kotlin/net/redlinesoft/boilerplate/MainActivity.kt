@@ -1,4 +1,4 @@
-package net.redlinesoft.simple_chat
+package net.redlinesoft.boilerplate
 
 import io.flutter.embedding.android.FlutterActivity
 
