@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Boilerplate',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.pink,
         textTheme: GoogleFonts.latoTextTheme(
           Theme.of(context).textTheme,
         ),
