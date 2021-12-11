@@ -1,6 +1,13 @@
+import 'dart:developer';
+
+import 'package:boilerplate/generated/l10n.dart';
+import 'package:boilerplate/models/appdata.dart';
+import 'package:boilerplate/services/analytic_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:boilerplate/pages/signup.dart';
 import 'package:boilerplate/services/auth_service.dart';
+import 'package:get/get.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({Key? key}) : super(key: key);
@@ -14,9 +21,23 @@ class _SigninPageState extends State<SigninPage> {
   final TextEditingController _passwordTextEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  AppController controller = Get.find<AppController>();
+
+  @override
+  void initState() {
+    super.initState();
+    authStateChange();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // firebase analytics
+    firebaseAnalytics.setCurrentScreen(screenName: 'SignIn');
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: SafeArea(
         left: true,
         minimum: const EdgeInsets.all(16.0),
@@ -33,7 +54,7 @@ class _SigninPageState extends State<SigninPage> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "Sign In",
+                        S.of(context).signIn,
                         style: Theme.of(context).textTheme.headline4,
                       ),
                     ),
@@ -41,10 +62,13 @@ class _SigninPageState extends State<SigninPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         controller: _usernameTextEditingController,
-                        decoration: const InputDecoration(prefixIcon: Icon(Icons.account_circle), hintText: 'Email'),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.account_circle),
+                          hintText: S.of(context).email,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter your name";
+                            return S.of(context).pleaseEnterEmail;
                           }
                         },
                       ),
@@ -53,11 +77,14 @@ class _SigninPageState extends State<SigninPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         controller: _passwordTextEditingController,
-                        decoration: const InputDecoration(prefixIcon: Icon(Icons.lock), hintText: 'Password'),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          hintText: S.of(context).password,
+                        ),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter password";
+                            return S.of(context).pleaseEnterPassword;
                           }
                         },
                       ),
@@ -71,15 +98,19 @@ class _SigninPageState extends State<SigninPage> {
                             child: const Text("Sign Up"),
                             onPressed: () {
                               // goto signup page
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SignupPage()));
+                              Navigator.pushReplacement(
+                                  context, MaterialPageRoute(builder: (context) => const SignupPage()));
                             },
                           ),
                           ElevatedButton(
-                            child: const Text("Sign In"),
+                            child: Text(S.of(context).signIn),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 // signin
-                                signIn(username: _usernameTextEditingController.text, password: _passwordTextEditingController.text, context: context);
+                                signIn(
+                                    username: _usernameTextEditingController.text,
+                                    password: _passwordTextEditingController.text,
+                                    context: context);
                               }
                             },
                           ),
@@ -94,5 +125,17 @@ class _SigninPageState extends State<SigninPage> {
         ),
       ),
     );
+  }
+
+  void authStateChange() {
+    firebaseAuth.authStateChanges().listen((User? user) {
+      if (user == null) {
+        log('User is currently signed out!');
+      } else {
+        log('User is signed in!');
+        // load user data
+        controller.getUserData();
+      }
+    });
   }
 }

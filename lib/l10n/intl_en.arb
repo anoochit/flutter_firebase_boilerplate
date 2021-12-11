@@ -1,0 +1,8 @@
+{
+    "appName": "Boilerplate",
+    "signIn": "SignIn",
+    "email": "E-mail",
+    "password": "Password",
+    "pleaseEnterPassword": "Please enter password",
+    "pleaseEnterEmail": "Please enter email"
+}

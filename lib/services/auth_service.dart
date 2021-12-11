@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:boilerplate/pages/home.dart';
+import 'package:get/get.dart';
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -50,10 +50,10 @@ void signIn({required String username, required String password, required BuildC
   firebaseSignIn(username, password).then((result) {
     if (result!) {
       // show snackbar
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Signed in"),
-      ));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text("Signed in"),
+      // ));
+      Get.off(() => const HomePage());
     } else {
       // show error in snackbar
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -64,7 +64,8 @@ void signIn({required String username, required String password, required BuildC
   });
 }
 
-void signUp({required String displayName, required String username, required String password, required BuildContext context}) {
+void signUp(
+    {required String displayName, required String username, required String password, required BuildContext context}) {
   firebaseSignUp(username, password).then((result) {
     if (result) {
       // update displayname

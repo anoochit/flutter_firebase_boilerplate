@@ -1,11 +1,13 @@
-import 'dart:developer';
+import 'package:boilerplate/generated/l10n.dart';
+import 'package:boilerplate/pages/chat.dart';
+import 'package:boilerplate/pages/feed.dart';
+import 'package:boilerplate/pages/profile.dart';
+import 'package:boilerplate/services/analytic_service.dart';
 import 'package:boilerplate/widgets/avatar_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boilerplate/models/appdata.dart';
-import 'package:boilerplate/pages/signin.dart';
-import 'package:boilerplate/services/auth_service.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,22 +17,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-
   @override
   void initState() {
-    // listen auth state change
-    authStateChange();
     super.initState();
   }
 
+  AppController controller = Get.find<AppController>();
+
   @override
   Widget build(BuildContext context) {
+    // firebase analytics
+    firebaseAnalytics.setCurrentScreen(screenName: 'Home');
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Boilerplate"),
+        title: Text(S.of(context).appName),
         actions: [
-          userActionButton(),
+          userActionButton(onTab: () {
+            controller.currentIndex.value = 2;
+            controller.update();
+          }),
         ],
       ),
       body: contenStack(),
@@ -39,55 +45,66 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget contenStack() {
-    return (appData.userDisplayName != null)
-        ? IndexedStack(
-            index: _currentIndex,
-            children: [
-              Container(),
-              Container(),
-            ],
-          )
-        : Container();
-  }
-
-  BottomNavigationBar bottomNavigationBar(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.shifting,
-      fixedColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Theme.of(context).shadowColor,
-      currentIndex: _currentIndex,
-      onTap: (value) => setState(() {
-        _currentIndex = value;
-      }),
-      items: const [
-        BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.users), label: 'Menu 1'),
-        BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.comments), label: 'Menu 2'),
-      ],
-    );
-  }
-
-  Widget userActionButton() {
-    return (appData.userDisplayName != null)
-        ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: getAvatarWidget(displayName: (appData.userDisplayName.toString())),
-          )
-        : Container();
-  }
-
-  void authStateChange() {
-    firebaseAuth.authStateChanges().listen((User? user) {
-      if (user == null) {
-        log('User is currently signed out!');
-        // goto sign in page
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SigninPage()));
-      } else {
-        log('User is signed in!');
-        // load user data
-        setState(() {
-          appData.getUserData();
+    return GetBuilder<AppController>(
+        init: AppController(),
+        builder: (controller) {
+          if (controller.userUid != null) {
+            return IndexedStack(
+              index: controller.currentIndex.value,
+              children: const [
+                FeedPage(),
+                ChatPage(),
+                ProfilePage(),
+              ],
+            );
+          } else {
+            return const Center(
+              child: Text("Please Login"),
+            );
+          }
         });
-      }
-    });
+  }
+
+  Widget bottomNavigationBar(BuildContext context) {
+    return GetBuilder<AppController>(
+        init: AppController(),
+        builder: (controller) {
+          return ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            child: BottomNavigationBar(
+              backgroundColor: Theme.of(context).primaryColor,
+              unselectedItemColor: Colors.white.withOpacity(0.6),
+              selectedItemColor: Colors.white,
+              currentIndex: controller.currentIndex.value,
+              onTap: (value) {
+                controller.currentIndex.value = value;
+                controller.update();
+              },
+              items: const [
+                BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.users), label: 'Feed'),
+                BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.comments), label: 'Chat'),
+                BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.userAlt), label: 'Profile'),
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget userActionButton({required VoidCallback onTab}) {
+    return GetBuilder<AppController>(
+      init: AppController(),
+      builder: (controller) {
+        return GestureDetector(
+          child: getAvatarWidget(
+            context,
+            displayName: '${controller.userDisplayName}',
+          ),
+          onTap: onTab,
+        );
+      },
+    );
   }
 }

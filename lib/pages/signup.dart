@@ -1,3 +1,4 @@
+import 'package:boilerplate/services/analytic_service.dart';
 import 'package:flutter/material.dart';
 import 'package:boilerplate/pages/signin.dart';
 import 'package:boilerplate/services/auth_service.dart';
@@ -10,14 +11,23 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final TextEditingController _displaynameTextEditingController = TextEditingController();
-  final TextEditingController _usernameTextEditingController = TextEditingController();
-  final TextEditingController _passwordTextEditingController = TextEditingController();
+  final TextEditingController _displaynameTextEditingController =
+      TextEditingController();
+  final TextEditingController _usernameTextEditingController =
+      TextEditingController();
+  final TextEditingController _passwordTextEditingController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    // firebase analytics
+    firebaseAnalytics.setCurrentScreen(screenName: 'SignUp');
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: SafeArea(
         left: true,
         minimum: const EdgeInsets.all(16.0),
@@ -25,7 +35,8 @@ class _SignupPageState extends State<SignupPage> {
           key: _formKey,
           child: Center(
             child: Card(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -93,7 +104,11 @@ class _SignupPageState extends State<SignupPage> {
                             child: const Text("Sign In"),
                             onPressed: () {
                               // goto signin page
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SigninPage()));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SigninPage()));
                             },
                           ),
                           ElevatedButton(
@@ -102,9 +117,12 @@ class _SignupPageState extends State<SignupPage> {
                               if (_formKey.currentState!.validate()) {
                                 // sign up
                                 signUp(
-                                    displayName: _displaynameTextEditingController.text,
-                                    username: _usernameTextEditingController.text,
-                                    password: _passwordTextEditingController.text,
+                                    displayName:
+                                        _displaynameTextEditingController.text,
+                                    username:
+                                        _usernameTextEditingController.text,
+                                    password:
+                                        _passwordTextEditingController.text,
                                     context: context);
                               }
                             },

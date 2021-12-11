@@ -1,0 +1,8 @@
+{
+    "appName": "แอปแม่แบบ",
+    "signIn": "เข้าสู่ระบบ",
+    "email": "อีเมล์",
+    "password": "รหัสผ่าน",
+    "pleaseEnterPassword": "กรุณากรอกรหัสผ่าน",
+    "pleaseEnterEmail": "กรุณากรอกอีเมล์"
+}
