@@ -1,17 +1,19 @@
 import 'package:boilerplate/generated/l10n.dart';
 import 'package:boilerplate/pages/signin.dart';
-import 'package:boilerplate/services/analytic_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:boilerplate/models/appdata.dart';
-import 'package:boilerplate/widgets/error_widget.dart';
-import 'package:boilerplate/widgets/loading_widget.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -23,8 +25,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
   AppController controller = Get.put(AppController());
 
   @override
@@ -57,28 +57,7 @@ class _MyAppState extends State<MyApp> {
         ),
         brightness: Brightness.light,
       ),
-      home: FutureBuilder(
-        future: _initialization,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // has error
-          if (snapshot.hasError) {
-            return const Scaffold(
-              body: ErrorMessageWidget(),
-            );
-          }
-
-          // load home page
-          if (snapshot.connectionState == ConnectionState.done) {
-            firebaseAnalytics.logAppOpen();
-            return const SigninPage();
-          }
-
-          // loading
-          return const Scaffold(
-            body: LoadingWidget(),
-          );
-        },
-      ),
+      home: const SigninPage(),
     );
   }
 }

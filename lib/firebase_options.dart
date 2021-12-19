@@ -41,21 +41,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCYDU_luucIfoCzwc9cA8S7oiBZWwYr4BU',
-    appId: '1:558917745472:android:bd291d5ccbf4b9021198a5',
-    messagingSenderId: '558917745472',
-    projectId: 'workshop-14e8d',
-    storageBucket: 'workshop-14e8d.appspot.com',
+    apiKey: 'AIzaSyA0xDslET_kJesaea1TnmnnNkbpt94QE7I',
+    appId: '1:651605535947:android:1c5af8de74c2d896683f4e',
+    messagingSenderId: '651605535947',
+    projectId: 'workshop-666c4',
+    storageBucket: 'workshop-666c4.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCf0ZwAGuSg3Fi6529w4lXyk1VMO8KDpYY',
-    appId: '1:558917745472:ios:cc859eff0956b99c1198a5',
-    messagingSenderId: '558917745472',
-    projectId: 'workshop-14e8d',
-    storageBucket: 'workshop-14e8d.appspot.com',
-    androidClientId: '558917745472-2bke83ete17rb3mdsivdrr75go0ojird.apps.googleusercontent.com',
-    iosClientId: '558917745472-h23tn24hndn3rq3uj8en1g3fs384gb6h.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCrHCHEWJIIq5RoiE23OHCkPu5goF1ELqY',
+    appId: '1:651605535947:ios:73668b8cfb58cc72683f4e',
+    messagingSenderId: '651605535947',
+    projectId: 'workshop-666c4',
+    storageBucket: 'workshop-666c4.appspot.com',
+    androidClientId: '651605535947-09i82m60st2lofg9il3sospfgolm4fbs.apps.googleusercontent.com',
+    iosClientId: '651605535947-l6bojvl9hh9h145e3j1oaqojmggvgs8k.apps.googleusercontent.com',
     iosBundleId: 'net.redlinesoft.boilerplate',
   );
 }

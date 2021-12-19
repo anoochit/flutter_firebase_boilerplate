@@ -69,7 +69,9 @@ void signUp(
   firebaseSignUp(username, password).then((result) {
     if (result) {
       // update displayname
-      firebaseAuth.currentUser!.updateDisplayName(displayName);
+      firebaseAuth.currentUser!.updateDisplayName(displayName).catchError((onError) {
+        log(onError);
+      });
       // check user is exist in firestore
       firebaseFirestore.collection("users").doc(firebaseAuth.currentUser!.uid).get().then((doc) {
         if (!doc.exists) {
@@ -79,11 +81,13 @@ void signUp(
             'displayName': displayName,
           });
         }
+      }).catchError((onError) {
+        log(onError);
       });
       // show snackbar
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Signed up"),
-      ));
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text("Signed up"),
+      // ));
       // goto home page
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
@@ -93,5 +97,7 @@ void signUp(
         backgroundColor: Colors.red,
       ));
     }
+  }).catchError((onError) {
+    log("Error " + onError);
   });
 }

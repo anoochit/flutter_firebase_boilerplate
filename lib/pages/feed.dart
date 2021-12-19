@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:boilerplate/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:boilerplate/services/analytic_service.dart';
